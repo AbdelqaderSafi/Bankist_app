@@ -109,8 +109,15 @@ const clacDisplaySummary = function (movements) {
     .filter(mov => mov < 0)
     .reduce((acc, mov) => mov + acc, 0);
   labelSumOut.textContent = `${Math.abs(outcomes)}€`;
+
+  const interest = movements
+    .filter(mov => mov > 0)
+    .map(deposite => (deposite * 1.2) / 100)
+    .reduce((acc, deposit) => acc + deposit, 0);
+  labelSumInterest.textContent = `${interest}€`;
 };
 clacDisplaySummary(account1.movements);
+
 /////////////////////////////////////////////////
 const addUser = function (accs) {
   accs.forEach(function (acc) {
