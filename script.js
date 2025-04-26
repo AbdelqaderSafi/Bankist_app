@@ -92,9 +92,9 @@ const displayMovements = function (movement) {
 };
 // displayMovements(account1.movements);
 
-const calcDisplayBalance = function (move) {
-  const calcBalance = move.reduce((acc, mov) => mov + acc, 0);
-  labelBalance.textContent = `${calcBalance}€`;
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => mov + acc, 0);
+  labelBalance.textContent = `${acc.balance}€`;
 };
 // calcDisplayBalance(account1.movements);
 
@@ -128,6 +128,12 @@ const addUser = function (accs) {
 };
 addUser(accounts);
 
+const updateUI = function (acc) {
+  displayMovements(acc.movements);
+  calcDisplayBalance(acc);
+  clacDisplaySummary(acc.movements, acc.interestRate);
+};
+
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -139,14 +145,44 @@ btnLogin.addEventListener('click', function (e) {
     labelWelcome.textContent = `Welcome back, ${
       currentAccount.owner.split(' ')[0]
     }`;
+
     containerApp.style.opacity = 1;
-    displayMovements(currentAccount.movements);
-    calcDisplayBalance(currentAccount.movements);
-    clacDisplaySummary(currentAccount.movements, currentAccount.interestRate);
     inputLoginPin.value = inputLoginUsername.value = '';
     inputLoginPin.blur();
+    updateUI(currentAccount);
   }
 });
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  console.log(amount, receiverAcc);
+
+  inputTransferTo.value = inputTransferAmount.value = '';
+  if (
+    amount > 0 &&
+    amount <= currentAccount.balance &&
+    receiverAcc &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    // Doing the transfer
+    receiverAcc.movements.push(amount);
+    currentAccount.movements.push(-amount);
+    // Update UI
+    updateUI(currentAccount);
+  }
+
+  // displayMovements(receiverAcc.movements);
+  // calcDisplayBalance(receiverAcc);
+  // clacDisplaySummary(receiverAcc.movements, receiverAcc.interestRate);
+  // // inputLoginPin.value = inputLoginUsername.value = '';
+  // // inputLoginPin.blur();
+});
+
 /////////////////////////////////////////////
 
 ////////////////////////////////////////////////
