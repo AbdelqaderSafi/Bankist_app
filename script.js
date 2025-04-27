@@ -134,6 +134,7 @@ const updateUI = function (acc) {
   clacDisplaySummary(acc.movements, acc.interestRate);
 };
 
+/// Implementing Login
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -153,6 +154,7 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
+///Implementing transfer
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
 
@@ -175,14 +177,23 @@ btnTransfer.addEventListener('click', function (e) {
     // Update UI
     updateUI(currentAccount);
   }
-
-  // displayMovements(receiverAcc.movements);
-  // calcDisplayBalance(receiverAcc);
-  // clacDisplaySummary(receiverAcc.movements, receiverAcc.interestRate);
-  // // inputLoginPin.value = inputLoginUsername.value = '';
-  // // inputLoginPin.blur();
 });
 
+///Implementing close account
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const index = accounts.findIndex(
+    acc =>
+      acc.username === inputCloseUsername.value &&
+      acc.pin === Number(inputClosePin.value)
+  );
+  if (accounts.indexOf(currentAccount) === index) {
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
+});
 /////////////////////////////////////////////
 
 ////////////////////////////////////////////////
