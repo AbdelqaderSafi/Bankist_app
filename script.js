@@ -13,7 +13,7 @@ const account1 = {
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'Abedelqader Safi',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
@@ -154,7 +154,7 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
-///Implementing transfer
+/// Implementing transfer
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
 
@@ -179,7 +179,18 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
-///Implementing close account
+/// Implementing request Loan
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
+/// Implementing close account
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
 
