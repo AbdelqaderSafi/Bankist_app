@@ -76,10 +76,12 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 /////////////////////////////////////////////////
 
 /////////////////////////////////////////////////
-const displayMovements = function (movement) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
 
-  movement.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">
@@ -205,51 +207,11 @@ btnClose.addEventListener('click', function (e) {
   }
   inputCloseUsername.value = inputClosePin.value = '';
 });
-/////////////////////////////////////////////
 
-////////////////////////////////////////////////
-
-// const eurToUsd = 1.1;
-// const movementsUsd = movements.map(mov => Math.trunc(mov * eurToUsd));
-// console.log(movements);
-// console.log(movementsUsd);
-
-///////////////////////////////////////////////
-
-// console.log(accounts);
-///////////////////////////////////////////////
-
-// const deposit = movements.filter(mov => mov > 0);
-// console.log(deposit);
-////////////////////////////////////////////////
-
-//  movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-// const globalBalane = movements.reduce(function (acc, mov, i, curentArr) {
-//   return acc + mov;
-// }, 0);
-// console.log(globalBalane);
-/////////////////////////////////////////////////
-// const arr = [5, 2, 4, 1, 15, 8, 3];
-// // const humanAge = [];
-// const calcAverageHumanAge = function (ages) {
-//   const humanAge = ages.map(dogAge =>
-//     dogAge <= 2 ? 2 * dogAge : 16 + dogAge * 4
-//   );
-//   const adult = humanAge.filter(age => age > 18);
-//   console.log(adult);
-//   console.log(humanAge);
-//   const avg = adult.reduce((acc, adu) => acc + adu) / adult.length;
-//   console.log(avg);
-// };
-// calcAverageHumanAge(arr);
-// console.log(arr);
-
-//////// Maximum value by reduce
-// const max = movements.reduce(
-//   (acc, mov) => (mov > acc ? mov : acc),
-//   movements[0]
-// );
-// console.log(max);
-
-// const jessy = accounts.find(nam => nam.owner === 'Jessica Davis');
-// console.log(jessy);
+/// Implementing sort
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
