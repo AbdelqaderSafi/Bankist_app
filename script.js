@@ -105,6 +105,13 @@ const formatMovDate = function (date, locale) {
   }
 };
 
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -123,11 +130,13 @@ const displayMovements = function (acc, sort = false) {
     const date = new Date(movDate);
     const displayDate = formatMovDate(date, acc.locale);
 
+    const formattedMov = formatCur(movement, acc.locale, acc.currency);
+
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">
           ${i + 1} ${type}</div>
           <div class="movements__date">${displayDate}</div>
-          <div class="movements__value">${movement.toFixed(2)}€</div>
+          <div class="movements__value">${formattedMov}</div>
           </div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -137,26 +146,29 @@ const displayMovements = function (acc, sort = false) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => mov + acc, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+  labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 };
 // calcDisplayBalance(account1.movements);
 
-const clacDisplaySummary = function (movements, intrest) {
-  const incomes = movements
+const clacDisplaySummary = function (acc) {
+  const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => mov + acc, 0);
-  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+  labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
 
-  const outcomes = movements
+  const outcomes = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => mov + acc, 0);
-  labelSumOut.textContent = `${Math.abs(outcomes).toFixed(2)}€`;
+  labelSumOut.textContent = formatCur(outcomes, acc.locale, acc.currency);
 
-  const interest = movements
+  const interest = acc.movements
     .filter(mov => mov > 0)
-    .map(deposite => (deposite * intrest) / 100)
-    .reduce((acc, deposit) => acc + deposit, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+    .map(deposit => (deposit * acc.interestRate) / 100)
+    .filter((int, i, arr) => {
+      return int >= 1;
+    })
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
 };
 // clacDisplaySummary(account1.movements);
 
@@ -174,7 +186,7 @@ addUser(accounts);
 const updateUI = function (acc) {
   displayMovements(acc);
   calcDisplayBalance(acc);
-  clacDisplaySummary(acc.movements, acc.interestRate);
+  clacDisplaySummary(acc);
 };
 
 /// Implementing Login
